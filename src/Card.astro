@@ -1,4 +1,12 @@
 ---
+interface Props {
+    url: string;
+    size?: "small" | "normal" | "large" | "embed";
+    withBrandcolor?: boolean;
+    withStyling?: boolean;
+    target?: string;
+}
+
 import ExternalCard from "./ExternalCard.astro";
 import EmbeddedCard from "./EmbeddedCard.astro";
 import mql from "@microlink/mql";
@@ -15,6 +23,7 @@ const {
     withStyling = true,
     target = "_blank",
 } = Astro.props;
+
 const urlHash = createHash("sha256").update(url).digest("hex");
 
 // Prepare the cache

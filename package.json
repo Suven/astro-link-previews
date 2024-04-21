@@ -1,13 +1,15 @@
 {
   "name": "astro-link-previews",
-  "type": "module",
   "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "files": ["src", "index.ts"],
+  "keywords": ["astro-component"],
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "build": "astro build"
   },
   "dependencies": {
     "@microlink/mql": "^0.13.5"
@@ -15,5 +17,8 @@
   "devDependencies": {
     "astro": "^4.6.3",
     "@picocss/pico": "^2.0.6"
+  },
+  "peerDependencies": {
+    "astro": "^4.0.0"
   }
 }
