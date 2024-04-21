@@ -1,0 +1,137 @@
+---
+import Card from "../components/Card.astro";
+import { Code } from "astro:components";
+import "@picocss/pico/css/pico.classless.yellow.min.css";
+---
+
+<html lang="en" data-theme="dark">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="viewport" content="width=device-width" />
+        <meta name="generator" content={Astro.generator} />
+        <title>Astro</title>
+    </head>
+    <body>
+        <h1>astro-link-previews</h1>
+        <p>
+            This integration provides a single component, that is able to
+            display previews/embeds for most existing websites.
+        </p>
+        <p>
+            It is powered by <a href="https://microlink.io/"
+                >https://microlink.io/</a
+            > which provides 50 free and unauthanticated API calls per day. This
+            integration caches resolved URLs to speed up SSG. If you like their service
+            / need more, please subscribe to one of their plans. This integration
+            isn't affiliated to them.
+        </p>
+        <p>
+            In contrast to <a
+                href="https://microlink.io/docs/sdk/getting-started/overview"
+                >microlinks SDK</a
+            >, this integration is a bit more opniated, aims to ship zero JS to
+            the client, is GDPR-compliant whenever you use the small or normal
+            variant and supports a 2-click variant for GDPR-complient rich
+            embeds.
+        </p>
+
+        <h2>Installation</h2>
+        <p>
+            For external images to be downloaded while building, instead of
+            remote loading by the client (and thus being more GDPR compliant),
+            you need to add the following to your <code>astr.config.js</code>.
+            The components will work even without this though.
+        </p>
+        <Code
+            code={`image: { remotePatterns: [{ protocol: "https" }] },`}
+            lang="js"
+        />
+        <p>
+            You can find more info about that in <a
+                href="https://docs.astro.build/de/guides/images/#authorizing-remote-images"
+                >astros docs</a
+            >.
+        </p>
+
+        <h2>Usage</h2>
+
+        <h3>Previews</h3>
+        <h4>Small size previews</h4>
+        <Card size="small" url="https://github.com/microlinkhq" />
+        <Code
+            code={`<Card size="small" url="https://github.com/microlinkhq" />`}
+            lang="jsx"
+        />
+        <Card
+            size="small"
+            url="https://www.last.fm/music/Tracky+Birthday/_/Websiiite+(with+Dragan+Espenschied)"
+        />
+        <Code
+            code={`<Card size="small" url="https://www.last.fm/music/Tracky+Birthday/_/Websiiite+(with+Dragan+Espenschied)" />`}
+            lang="jsx"
+        />
+
+        <h4>Normal size previews</h4>
+        <Card url="https://astro.build/" />
+        <Code code={`<Card url="https://astro.build/" />`} lang="jsx" />
+
+        <h4>Normal size without prestyling</h4>
+        <Card
+            withStyling={false}
+            url="https://en.wikipedia.org/wiki/Ada_Lovelace"
+        />
+        <Code
+            code={`<Card withStyling={false} url="https://en.wikipedia.org/wiki/Ada_Lovelace" />`}
+            lang="jsx"
+        />
+
+        <h4>Large preview</h4>
+        <Card size="large" url="https://www.youtube.com/watch?v=USKD3vPD6ZA" />
+        <Code
+            code={`<Card size="large" url="https://www.youtube.com/watch?v=USKD3vPD6ZA" />`}
+            lang="jsx"
+        />
+
+        <h4>Embedded 2-Click-Variant</h4>
+        <Card size="embed" url="https://www.youtube.com/watch?v=W3id8E34cRQ" />
+        <Code
+            code={`<Card size="embed" url="https://www.youtube.com/watch?v=W3id8E34cRQ" />`}
+            lang="jsx"
+        />
+
+        <h4>Embedded with custom text</h4>
+        <Card size="embed" url="https://www.youtube.com/watch?v=LWGJA9i18Co" />
+        <Code
+            code={`<Card size="embed" url="https://www.youtube.com/watch?v=LWGJA9i18Co" />`}
+            lang="jsx"
+        />
+
+        <h4>Embedded but falls back to large preview</h4>
+        <p>
+            When no iFrame is available, the component falls back to the large
+            preview instead.
+        </p>
+        <Card size="embed" url="https://livewire.laravel.com/" />
+        <Code
+            code={`<Card size="embed" url="https://livewire.laravel.com/" />`}
+            lang="jsx"
+        />
+    </body>
+</html>
+
+<style>
+    :root {
+        --pico-font-size: 100%;
+    }
+
+    body {
+        max-width: 40rem;
+        margin: 0 auto;
+        padding: 1rem;
+    }
+
+    :global(.astro-link-preview) {
+        margin: 1rem 0;
+    }
+</style>

@@ -1,0 +1,291 @@
+---
+import { Image } from "astro:assets";
+
+const {
+    size,
+    withStyling,
+    withBrandcolor,
+    brandcolor,
+    url,
+    logo,
+    favicon,
+    title,
+    description = "",
+    publisher,
+    image,
+    author,
+    width,
+    height,
+    target,
+} = Astro.props;
+
+const sizes = {
+    small: 96,
+    normal: 256,
+    large: 1280,
+};
+
+const relWidth = sizes[size];
+const relHeight = (height / width) * relWidth;
+
+const usedFavicon = favicon && !favicon.endsWith(".ico") ? favicon : logo;
+const useUsedFavicon = usedFavicon && !usedFavicon.endsWith(".ico");
+
+const classList = [
+    "astro-link-preview",
+    "astro-link-preview--external",
+    withStyling ? "astro-link-preview--with-styling" : "",
+    withBrandcolor ? "astro-link-preview--with-brandcolors" : "",
+    `astro-link-preview--${size}`,
+];
+---
+
+<a
+    href={url}
+    class:list={classList}
+    target={target}
+    rel="nofollow"
+    title={title}
+>
+    <div class="astro-link-preview__details">
+        <div class="astro-link-preview__description">
+            <div class="astro-link-preview__description-title">{title}</div>
+            <div class="astro-link-preview__description-body">
+                {description}
+            </div>
+        </div>
+        <div class="astro-link-preview__source">
+            <div class="astro-link-preview__publisher">
+                {
+                    useUsedFavicon && (
+                        <Image
+                            class="astro-link-preview__publisher-logo"
+                            src={usedFavicon}
+                            alt={`logo ${publisher}`}
+                            width="36"
+                            height="36"
+                        />
+                    )
+                }
+                <span class="astro-link-preview__publisher-name"
+                    >{publisher}</span
+                >
+            </div>
+            <div class="astro-link-preview__author">{author}</div>
+            <div class="astro-link-preview__link-hint">⧉</div>
+        </div>
+    </div>
+    <div class="astro-link-preview__image-container">
+        <Image
+            class="astro-link-preview__image"
+            src={image}
+            alt=""
+            width={relWidth}
+            height={relHeight}
+        />
+    </div>
+</a>
+
+<style define:vars={{ brandcolor }}>
+    .astro-link-preview {
+        color: inherit;
+        text-decoration: inherit;
+        display: flex;
+    }
+
+    .astro-link-preview--large {
+        flex-direction: column;
+    }
+
+    .astro-link-preview__details {
+        display: flex;
+        flex-direction: column;
+        padding: 0.75rem;
+        gap: 0.5rem;
+        flex: 1;
+    }
+
+    .astro-link-preview__description {
+        flex: 1 1 0;
+        overflow: hidden;
+        text-overflow: elipsis;
+        word-break: break-all;
+        min-height: 0;
+    }
+
+    .astro-link-preview--large .astro-link-preview__details {
+        min-height: 6.25rem;
+    }
+
+    .astro-link-preview--small .astro-link-preview__details {
+        flex-direction: row;
+        padding: 0 0.75rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .astro-link-preview--small .astro-link-preview__description-body {
+        display: none;
+    }
+
+    .astro-link-preview--small .astro-link-preview__description-title {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: calc(100% - 1.5rem);
+    }
+
+    .astro-link-preview__image-container {
+        order: -1;
+        flex-shrink: 0;
+        font-size: 0;
+    }
+
+    .astro-link-preview--normal .astro-link-preview__image-container {
+        width: 8rem;
+        height: 8rem;
+    }
+
+    .astro-link-preview--small .astro-link-preview__image-container {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .astro-link-preview__source {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .astro-link-preview__publisher {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .astro-link-preview__author {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .astro-link-preview--small .astro-link-preview__author {
+        display: none;
+    }
+
+    .astro-link-preview--small .astro-link-preview__publisher-logo {
+        width: 1.125rem;
+        height: 1.125rem;
+    }
+
+    .astro-link-preview__publisher-logo {
+        width: 0.75rem;
+        height: 0.75rem;
+    }
+
+    .astro-link-preview__publisher-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .astro-link-preview--small .astro-link-preview__publisher-name {
+        display: none;
+    }
+
+    .astro-link-preview__link-hint {
+        margin-left: auto;
+    }
+
+    .astro-link-preview--small .astro-link-preview__link-hint {
+        display: none;
+    }
+
+    .astro-link-preview__image {
+        aspect-ratio: 1/1;
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+    }
+
+    .astro-link-preview--large .astro-link-preview__image {
+        aspect-ratio: 16/9;
+    }
+
+    :root {
+        --astro-link-preview--color: #333333;
+        --astro-link-preview--background-color: #ffffff;
+        --astro-link-preview--background-color-hover: rgb(241, 242, 252);
+        --astro-link-preview--border-color: rgb(231, 232, 242);
+        --astro-link-preview--border-color-hover: rgb(221, 222, 232);
+    }
+
+    .astro-link-preview--with-brandcolors .astro-link-preview__publisher-name {
+        color: var(--brandcolor);
+    }
+
+    .astro-link-preview--with-styling {
+        background: var(--astro-link-preview--background-color);
+        color: var(--astro-link-preview--color);
+    }
+
+    .astro-link-preview--with-styling:hover {
+        background: var(--astro-link-preview--background-color-hover);
+    }
+
+    .astro-link-preview--with-styling {
+        overflow: hidden;
+        border: 1px solid var(--astro-link-preview--border-color);
+    }
+
+    .astro-link-preview--with-styling:hover {
+        border: 1px solid var(--astro-link-preview--border-color-hover);
+    }
+
+    .astro-link-preview--with-styling.astro-link-preview--small:hover
+        .astro-link-preview__image-container,
+    .astro-link-preview--with-styling.astro-link-preview--normal:hover
+        .astro-link-preview__image-container {
+        border-right: 1px solid var(--astro-link-preview--border-color-hover);
+    }
+
+    .astro-link-preview--with-styling.astro-link-preview--small
+        .astro-link-preview__image-container,
+    .astro-link-preview--with-styling.astro-link-preview--normal
+        .astro-link-preview__image-container {
+        border-right: 1px solid var(--astro-link-preview--border-color);
+    }
+
+    .astro-link-preview--with-styling.astro-link-preview--large:hover
+        .astro-link-preview__image-container {
+        border-bottom: 1px solid var(--astro-link-preview--border-color-hover);
+    }
+
+    .astro-link-preview--with-styling.astro-link-preview--large
+        .astro-link-preview__image-container {
+        border-bottom: 1px solid var(--astro-link-preview--border-color);
+    }
+
+    .astro-link-preview--with-styling .astro-link-preview__publisher-name {
+        font-weight: bold;
+    }
+
+    .astro-link-preview--with-styling.astro-link-preview--small
+        .astro-link-preview__publisher-name {
+        font-weight: normal;
+    }
+
+    .astro-link-preview--with-styling .astro-link-preview__source {
+        font-size: 0.8rem;
+    }
+
+    .astro-link-preview--with-styling .astro-link-preview__description-title {
+        font-weight: bold;
+        margin-bottom: 0.3rem;
+    }
+
+    .astro-link-preview--small.astro-link-preview--with-styling
+        .astro-link-preview__description-title {
+        margin-bottom: 0;
+    }
+</style>

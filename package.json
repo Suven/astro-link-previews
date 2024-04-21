@@ -1,0 +1,19 @@
+{
+  "name": "astro-link-previews",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@microlink/mql": "^0.13.5"
+  },
+  "devDependencies": {
+    "astro": "^4.6.3",
+    "@picocss/pico": "^2.0.6"
+  }
+}

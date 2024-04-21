@@ -1,0 +1,136 @@
+---
+import ExternalCard from "./ExternalCard.astro";
+import EmbeddedCard from "./EmbeddedCard.astro";
+import mql from "@microlink/mql";
+import { createHash } from "node:crypto";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
+import { constants } from "node:fs";
+
+const cacheDir = ".microlink";
+
+const {
+    url,
+    size = "normal",
+    withBrandcolor = true,
+    withStyling = true,
+    target = "_blank",
+} = Astro.props;
+const urlHash = createHash("sha256").update(url).digest("hex");
+
+// Prepare the cache
+await access(cacheDir, constants.F_OK)
+    .then(() => {})
+    .catch(() =>
+        mkdir(cacheDir)
+            .then(() => {})
+            .catch(() => {}),
+    );
+
+// Does it already exist?
+const hit = await readFile(`${cacheDir}/${urlHash}`, "utf-8")
+    .then((d) => JSON.parse(d))
+    .catch(() => false);
+
+const fetchFromMicrolink = () => {
+    console.log("Fetching linkpreview for URL", url);
+    return mql(url, {
+        video: true,
+        favicon: true,
+        audio: true,
+        iframe: true,
+        palette: true,
+        data: {
+            favicon: [
+                {
+                    selector: 'link[rel="icon"]',
+                    attr: "href",
+                    type: "url",
+                },
+                {
+                    selector: 'link[type="image/x-icon"]',
+                    attr: "href",
+                    type: "url",
+                },
+            ],
+        },
+    })
+        .then((d) => d.data)
+        .catch(() => false);
+};
+
+const data = hit ? hit : await fetchFromMicrolink();
+
+if (!hit && data) {
+    await writeFile(`${cacheDir}/${urlHash}`, JSON.stringify(data));
+}
+
+const brandColors = {
+    YouTube: "#ff0000",
+    GitHub: "#333",
+    X: "#14171a",
+    Twitch: "#9146ff",
+    Amazon: "#ff9900",
+    Facebook: "#1877f2",
+    LinkedId: "#0a66c2",
+    Xing: "#026466",
+};
+
+const logo = data?.logo?.url;
+const favicon = data?.favicon;
+const publisher = data?.publisher;
+const brandcolor = brandColors[publisher];
+const author = data?.author;
+const title = data?.title;
+const image = data?.image?.url;
+const width = data?.image?.width;
+const height = data?.image?.height;
+const description = data?.description;
+const iFrame = data?.iframe?.html;
+const showExternalVariant = size !== "embed" || !iFrame;
+const usedSize = size !== "embed" ? size : "large";
+---
+
+{
+    data && showExternalVariant && (
+        <ExternalCard
+            size={usedSize}
+            withStyling={withStyling}
+            withBrandcolor={withBrandcolor}
+            brandcolor={brandcolor}
+            url={url}
+            logo={logo}
+            favicon={favicon}
+            title={title}
+            description={description}
+            publisher={publisher}
+            image={image}
+            author={author}
+            width={width}
+            height={height}
+            target={target}
+        />
+    )
+}
+
+{
+    data && !showExternalVariant && (
+        <EmbeddedCard
+            size={usedSize}
+            withStyling={withStyling}
+            withBrandcolor={withBrandcolor}
+            brandcolor={brandcolor}
+            url={url}
+            logo={logo}
+            favicon={favicon}
+            title={title}
+            description={description}
+            publisher={publisher}
+            image={image}
+            author={author}
+            width={width}
+            height={height}
+        />
+    )
+}
+
+{!data && <MissingDataCard />}
