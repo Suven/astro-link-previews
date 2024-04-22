@@ -6,4 +6,6 @@ export default defineConfig({
   image: {
     remotePatterns: [{ protocol: "https" }],
   },
+  site: "https://suven.github.io",
+  base: "astro-link-previews",
 });
