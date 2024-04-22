@@ -124,6 +124,7 @@ const usedSize = size !== "embed" ? size : "large";
 {
     data && !showExternalVariant && (
         <EmbeddedCard
+            iFrame={iFrame}
             size={usedSize}
             withStyling={withStyling}
             withBrandcolor={withBrandcolor}
@@ -138,8 +139,26 @@ const usedSize = size !== "embed" ? size : "large";
             author={author}
             width={width}
             height={height}
-        />
+        >
+            <slot name="previewText" slot="previewText" />
+        </EmbeddedCard>
     )
 }
 
 {!data && <MissingDataCard />}
+
+<style>
+    :root {
+        --astro-link-preview--embed-overlay-background: rgba(
+            255,
+            255,
+            255,
+            0.9
+        );
+        --astro-link-preview--color: #333333;
+        --astro-link-preview--background-color: #ffffff;
+        --astro-link-preview--background-color-hover: rgb(241, 242, 252);
+        --astro-link-preview--border-color: rgb(231, 232, 242);
+        --astro-link-preview--border-color-hover: rgb(221, 222, 232);
+    }
+</style>

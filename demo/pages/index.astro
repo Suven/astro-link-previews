@@ -1,7 +1,7 @@
 ---
 import Card from "../../src/Card.astro";
 import { Code } from "astro:components";
-import "@picocss/pico/css/pico.classless.yellow.min.css";
+import "@picocss/pico/css/pico.classless.pink.min.css";
 ---
 
 <html lang="en" data-theme="dark">
@@ -101,9 +101,13 @@ import "@picocss/pico/css/pico.classless.yellow.min.css";
         />
 
         <h4>Embedded with custom text</h4>
-        <Card size="embed" url="https://www.youtube.com/watch?v=LWGJA9i18Co" />
+        <Card size="embed" url="https://www.youtube.com/watch?v=LWGJA9i18Co">
+            <div slot="previewText">Foobar 2000</div>
+        </Card>
         <Code
-            code={`<Card size="embed" url="https://www.youtube.com/watch?v=LWGJA9i18Co" />`}
+            code={`<Card size="embed" url="https://www.youtube.com/watch?v=LWGJA9i18Co">
+  <div slot="previewText">Foobar 2000</div>
+</Card>`}
             lang="jsx"
         />
 

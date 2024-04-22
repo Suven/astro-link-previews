@@ -1,0 +1,167 @@
+---
+import { Image } from "astro:assets";
+
+const {
+    iFrame,
+    size,
+    withStyling,
+    withBrandcolor,
+    brandcolor,
+    url,
+    logo,
+    favicon,
+    title,
+    description = "",
+    publisher,
+    image,
+    author,
+    width,
+    height,
+    target,
+} = Astro.props;
+
+const relWidth = 1280;
+const relHeight = (height / width) * relWidth;
+
+const usedFavicon = favicon && !favicon.endsWith(".ico") ? favicon : logo;
+const useUsedFavicon = usedFavicon && !usedFavicon.endsWith(".ico");
+
+const classList = [
+    "astro-link-preview",
+    "astro-link-preview--embedded",
+    withStyling ? "astro-link-preview--with-styling" : "",
+    withBrandcolor ? "astro-link-preview--with-brandcolors" : "",
+];
+
+const hasPreviewText = await Astro.slots.render("previewText");
+---
+
+<div class:list={classList} data-link-preview-embed data-iframe-code={iFrame}>
+    <div class="astro-link-preview__placeholder">
+        <div class="astro-link-preview__embed-image-container">
+            <Image
+                class="astro-link-preview__embed-image"
+                src={image}
+                alt=""
+                width={relWidth}
+                height={relHeight}
+            />
+        </div>
+        <div class="astro-link-preview__source">
+            <div class="astro-link-preview__publisher">
+                {
+                    useUsedFavicon && (
+                        <Image
+                            class="astro-link-preview__publisher-logo"
+                            src={usedFavicon}
+                            alt={`logo ${publisher}`}
+                            width="36"
+                            height="36"
+                        />
+                    )
+                }
+            </div>
+            <div class="astro-link-preview__title">{title}</div>
+        </div>
+        <div class="astro-link-preview__embed-text">
+            {
+                hasPreviewText ? (
+                    <slot name="previewText" />
+                ) : (
+                    <div>Click to activate external content</div>
+                )
+            }
+        </div>
+    </div>
+    <div class="astro-link-preview__embed"></div>
+</div>
+
+<script>
+    document.querySelectorAll("[data-link-preview-embed]").forEach((button) => {
+        button.addEventListener("click", (e) => {
+            const container = e.target.closest("[data-link-preview-embed]");
+            container.classList.add("astro-link-preview--active");
+            container.querySelector(".astro-link-preview__embed").innerHTML =
+                container.dataset.iframeCode;
+        });
+    });
+</script>
+
+<style>
+    .astro-link-preview__placeholder {
+        aspect-ratio: 16/9;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        cursor: pointer;
+        padding: 1rem;
+    }
+
+    .astro-link-preview__embed-text {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+        margin-top: -2rem;
+        font-size: 1.25rem;
+    }
+
+    .astro-link-preview__source {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .astro-link-preview--active .astro-link-preview__placeholder {
+        display: none;
+    }
+
+    .astro-link-preview__embed {
+        display: none;
+    }
+
+    .astro-link-preview--active .astro-link-preview__embed {
+        display: block;
+    }
+
+    .astro-link-preview__embed :global(iframe) {
+        height: auto;
+        width: 100%;
+    }
+
+    .astro-link-preview__embed :global(iframe[src*="youtube"]) {
+        aspect-ratio: 16/9;
+    }
+
+    .astro-link-preview__embed-image-container {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: -2;
+    }
+
+    .astro-link-preview__embed-image {
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+    }
+
+    .astro-link-preview__embed-image-container:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: var(--astro-link-preview--embed-overlay-background);
+        z-index: 0;
+    }
+
+    .astro-link-preview--with-styling:not(.astro-link-preview--active) {
+        border: 1px solid var(--astro-link-preview--border-color);
+        color: var(--astro-link-preview--color);
+        font-weight: bold;
+    }
+</style>
