@@ -1,5 +1,9 @@
 {
   "name": "astro-link-previews",
+  "homepage": "https://suven.github.io/astro-link-previews/",
+  "repository": "https://github.com/Suven/astro-link-previews",
+  "bugs": "https://github.com/Suven/astro-link-previews/issues",
+  "description": "Generates rich GDPR-conform link previews / embeds in your astro project.",
   "version": "0.0.1",
   "type": "module",
   "exports": {
@@ -20,5 +24,6 @@
   },
   "peerDependencies": {
     "astro": "^4.0.0"
-  }
+  },
+  "license": "MIT"
 }
